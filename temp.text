@@ -1,0 +1,40 @@
+  <div ng-controller="ctrl_sap">
+      <!-- <pre>{{ sapdata.saplist[0]}}</pre> -->
+      <table class="table table-dark table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">date</th>
+            <th scope="col">material</th>
+            <th scope="col">precess order</th>
+            <th scope="col">line</th>
+            <th scope="col">mass(kg)</th>
+            <th>view</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <tr ng-repeat="item in sapdata.saplist">
+            <td>{{$index+1}}</td>
+            <td>{{item.dwhIntfDate | date:'shortDate' }}</td>
+            <td>{{item.material}}</td>
+            <td>{{item.po}}</td>
+            <td>{{item.lineDescription}}</td>
+            <td>{{item.masskg}}</td>
+            <td> <a href="#" ng-click="modal1('size90')"><i class="fa fa-eye fa-2x primary-color-dark"></i></a></td>
+          </tr>
+          <!-- <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+            <td> <a href="#" ng-click="modal1('size90')"><i class="fa fa-eye fa-2x" aria-hidden="true"></i></a></td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td colspan="2">Larry the Bird</td>
+            <td>@twitter</td>
+          </tr> -->
+        </tbody>
+      </table>
+
+  </div>

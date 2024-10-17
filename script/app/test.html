@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta charset="ISO-8859-1">
+<title>getdata from google sheet </title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.2/angular.min.js"></script>
+<style>
+          .handpointer {
+        cursor: pointer;
+    }
+    table.table-hover tbody tr:hover {
+        background-color: #2196F3;
+    }
+</style>
+</head>
+<body ng-controller="displayController">
+	<h1>ขณะนี้อยู่  <p id="check"> </p>  </h1>
+	<hr>
+	<h1>Response</h1>
+	<p>{{googleAPI}}</p>
+	<hr>
+
+</body>
+</html>
+<script>
+    angular.module('myApp', [])
+.controller('displayController', ['$scope','MyService', function($scope, MyService){
+    // ถ้า user กด refresh หรือ กดปุ่ม F5 แสดงว่าต้องการข้อมูลล่าสุด ให้ไปดึงข้อมูลมาใหม่
+    $(document.body).on("keydown", this,
+     function (event) { 
+          if (event.keyCode == 116) { alert('F5 pressed!'); 
+       }
+    });
+
+var data = {
+  "A43D": {
+    "FIRSTNAME": "Mike",
+    "EMAIL": "mjohns@gmail.com",
+    "LASTNAME": "Johns"
+  },
+  "4E83": {
+    "FIRSTNAME": "Steve",
+    "EMAIL": "scook@gmail.com",
+    "LASTNAME": "Cook"
+  },"4498": {
+    "FIRSTNAME": "Jamorn",
+    "EMAIL": "jamorn@gmail.com",
+    "LASTNAME": "Seepa"
+  },"5893": {
+    "FIRSTNAME": "Pathompong Chanphiw",
+    "EMAIL": "pathompong.ch@irpc.co.th",
+    "LASTNAME": "ตี๋"
+  }
+}
+
+//here we save the item in the sessionStorage.
+sessionStorage.setItem("customersData", JSON.stringify(data));
+
+//now we retrieve the object again, but in a string form.
+var customersDataString = sessionStorage.getItem("customersData");
+console.log(customersDataString);
+
+//to get the object we have to parse it.
+var customersData = JSON.parse(customersDataString);
+console.log(customersData);
+
+// เวลาอ่าน   const obj = JSON.parse(sessionStorage.getItem("session_Jumbo_hd_bag_now"));
+// sessionStorage.clear();
+      
+              $scope.getgoogleAPIData = function(){
+            	  MyService.googleAPI().then(function (response){
+            		  $scope.googleAPI = response.data;
+                      // ibom คือชื่อ Key ใน localstorage ใน browser ถ้าอยากได้ข้อมูล last update ปิด browser แล้ว run ใหม่
+                      if (localStorage.getItem("ibom") === null) { // ครั้งแรกที่เปิด page
+                         //saving to localStorage
+                          localStorage.setItem('ibom', JSON.stringify( response.data ) );
+                        }
+                  }, function(error) {
+                    console.log(error)
+                  });
+              }
+             
+              
+              $scope.getgoogleAPIData();
+
+      }])
+      
+ .factory('MyService', function($http) {
+		
+		var factory = {}; 
+
+		factory.googleAPI = function() { // saplist
+			return $http.get('https://script.google.com/macros/s/AKfycbzDwgi0TvnvzmyailYwHfsW58AjdxcMya8m1YPOomzEhg3cpNEgMsURv1aSfCyPboXL/exec');
+		}
+
+/* 		factory.test= function() {
+			$http.get('ใส่ url ที่ต้องการ');
+		}
+ */
+		return factory;
+	});
+</script>
+
+<script>
+
+document.getElementById("check").innerHTML =shift_table();   
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth() + 1; //January is 0!
+var yyyy = today.getFullYear();
+var HH = today.getHours();
+var ss = today.getMinutes(); 
+console.log("วันนี้วันที่:",dd,"เดือน:",mm,"ปี:",yyyy,"HH:",HH,"ss:",ss)
+var morning = new Date(yyyy,mm,dd,06,00,00); // กะเช้า
+var evening = new Date(yyyy,mm,dd,14,00,00); // กะบ่าย
+var night = new Date(yyyy,mm,dd,22,00,00);//กะดึก
+
+function shift_table(){
+    var shift="";
+    if(today.getHours() >=morning.getHours() && today.getHours() < evening.getHours() ){
+        console.log("เวลาขณะนี้อยู่ในช่วงกะเช้า")
+        shift="M"
+    }else if(today.getHours()>=evening.getHours() && today.getHours()<night.getHours())
+    {console.log("เวลาขณะนี้อยู่ในช่วงกะบ่าย")
+    shift="E"
+    }
+    else { console.log("เวลาขณะนี้อยู่ในช่วงกะดึก")
+    shift="N"
+    }    
+    //console.log("shift: ",shift)
+ return shift
+}
+
+</script>

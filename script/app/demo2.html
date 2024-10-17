@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-messages.min.js"></script>
+    <script>
+      angular.module('myApp', [])
+ .directive('loading',   ['$http' ,function ($http)
+ {
+     return {
+         restrict: 'A',
+         template: '<div class="loading-spiner"><img src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" /> </div>',
+         link: function (scope, elm, attrs)
+         {
+             scope.isLoading = function () {
+                 return $http.pendingRequests.length > 0;
+             };
+
+             scope.$watch(scope.isLoading, function (v)
+             {
+                 if(v){
+                     elm.show();
+                 }else{
+                     elm.hide();
+                 }
+             });
+         }
+     };
+ }])
+  .controller('myController', function($scope, $http) {
+      $scope.loadData = function() {
+        $scope.students = [];
+        $http.get('https://script.google.com/macros/s/AKfycbx-Qn2vFV-NK8ivkn3wXe87iLwZrl1kmaUZ6LBQJR_WUWuTfwEX/exec')
+          .success(function(res) {
+              console.log("data="+res.data);
+              $scope.students = res.data.bagout;
+        });
+      }
+      
+  });
+    </script>
+  </head>
+  <body ng-app="myApp" ng-controller="myController" ng-init="loadData()">
+    <h1>Loading spinner</h1>
+    <div data-loading></div>
+    <div loading></div>
+    <div>
+      <pre>{{students |json}}</pre>
+    </div>
+  </body>
+</html>

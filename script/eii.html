@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="AppModule">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Document</title>
+    <style>
+ul {
+font:30px "Arial",san-serif;
+}
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script>
+      var AppModule = angular.module("AppModule", []);
+      AppModule.controller("eiictrl", function ($scope) {
+        $scope.MJMultiply = 3.6;
+        $scope.MJMultiply2 = 36.42;
+        $scope.Const1 = 0.0042;
+        $scope.Const2 = 21.375;
+
+        /*** ยอดการผลิต***/
+        $scope.productPP12A = 5049.90;
+        $scope.productPP12C = 4936.05;
+        $scope.productPP12Jumbo = 5882.22;
+        $scope.SumProductPP12 =
+          $scope.productPP12A + $scope.productPP12C + $scope.productPP12Jumbo;
+        /*** ค่าไฟฟ้า Kwh***/
+        $scope.KwhPP12A = 2401.8;
+        $scope.KwhPP12C = 1403.25;
+        $scope.KwhPP12Jumbo = 300.41;
+        $scope.SumKwhPP12 =
+          $scope.KwhPP12A + $scope.KwhPP12C + $scope.KwhPP12Jumbo;
+        /*** ค่าน้ำมัน(ลิตร) ***/
+        $scope.pp12oil = 580;
+        $scope.fixcal1 = 98.55;
+        $scope.pp12TotalbagoutMT = 17069.94;
+        $scope.pp12sumKwh = 6960.36;
+        $scope.pp12MJ = $scope.pp12oil*$scope.MJMultiply2; // ค่าน้ำมัน MJ = ค่าน้ำมันลิตร x 36.42
+
+        $scope.pp12oilMJ = 560 * 36.42;
+        $scope.pp12TotalMJ =
+        $scope.SumKwhPP12 * $scope.MJMultiply +
+        $scope.pp12oil * $scope.MJMultiply2; // 45452.5 (เอายอด Kwh รวมกัน x 3.6)+(ค่าน้ำมันลิตรx36.42)
+        $scope.pp12TotalGJ = $scope.pp12TotalMJ / 1000;
+        $scope.pp12Summary = summary(
+          0.0042,
+          21.375,
+          $scope.pp12TotalbagoutMT,
+          98.55
+        );
+        $scope.pp12Cal = (
+          ((0.0042 * $scope.pp12TotalbagoutMT + 21.375) * $scope.fixcal1) /
+          100
+        ).toFixed(2); // ((0.0042*$scope.pp12TotalbagoutMT)+21.375)*$scope.fixcal1/100
+        $scope.pp12EII = ($scope.pp12TotalGJ / $scope.pp12Cal).toFixed(3);
+        console.log($scope.pp12TotalGJ / $scope.pp12Cal);
+        console.log($scope.pp12EII);
+        console.log(Math.floor($scope.pp12EII).toFixed(2));
+        console.log(Math.floor($scope.pp12EII) * 100) / 100;
+        console.log(
+          "ใช้คำสั่ง Math.floor = " + Math.floor($scope.pp12EII * 100) / 100
+        );
+      });
+      function summary(cv1, cv2, F53, B1) {
+        return ((cv1 * F53 + cv2) * B1) / 100;
+      }
+    </script>
+    <script>
+      var a = 0.23678;
+      //   console.log( "ใช้คำสั่ง toFixed = "+a.toFixed(2) );
+      //  console.log( "ใช้คำสั่ง toFixed = "+a.toFixed(3) );
+      //   console.log( "ใช้คำสั่ง Math.floor = "+( Math.floor( a * 100 ) / 100 ) );
+    </script>
+  </head>
+  <body ng-controller="eiictrl">
+    <h2>ยอดการผลิต</h2>
+    <ul>
+      <li>A = {{productPP12A| number : fractionSize}} MT</li>
+      <li>C = {{productPP12C| number : fractionSize}} MT</li>
+      <li>Jumbo = {{productPP12Jumbo| number : fractionSize}} MT</li>
+      <li>Total = {{SumProductPP12| number : fractionSize}} MT</li>
+    </ul>
+    <h2>ค่าไฟฟ้า Kwh</h2>
+    <ul>
+      <li>A = {{KwhPP12A| number : fractionSize}} Kwh  {{KwhPP12A*3.6| number : fractionSize}} MJ</li>
+      <li>C = {{KwhPP12C| number : fractionSize}} Kwh  {{KwhPP12C*3.6| number : fractionSize}} MJ</li>
+      <li>Jumbo = {{KwhPP12Jumbo| number : fractionSize}} Kwh  {{KwhPP12Jumbo*3.6| number : fractionSize}} MJ</li>
+      <li>Total = {{SumKwhPP12| number : fractionSize}} Kwh {{ (KwhPP12Jumbo+KwhPP12A+KwhPP12C)*3.6 | number : fractionSize}} MJ</li>
+      <li>รวมพลังงาน Total (MJ) = {{pp12TotalMJ| number : fractionSize}} MT</li>
+      <li>รวมพลังงาน Total (GJ) = {{pp12TotalGJ| number : fractionSize}} MT</li>
+      <li>summary = {{pp12Summary| number : fractionSize}}</li>
+    </ul>
+    pp12Summary
+  </body>
+</html>
+<script>
+  let num = 0.4955298735281291;
+  console.log("1ค่าที่ได้คือ ", num.toFixed(2)); // 0.50
+  console.log("2ค่าที่ได้คือ ", num.toFixed(3)); // 0.496
+  console.log("3ค่าที่ได้คือ ", Math.floor(num * 100));
+  console.log("4ค่าที่ได้คือ ", Math.floor(num * 100) / 100); // 0.49
+</script>

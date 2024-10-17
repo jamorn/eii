@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta charset="UTF-8">
+<title>getdata from google sheet </title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.2/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-resource/1.8.3/angular-resource.min.js" integrity="sha512-+ymw+FkoDhPw+7/1DWVtASoICv7lwuvpkbVFqc4ASu1D385wKiLHu4ofOOxhpTlWoza/yIivwwteembPbeBuMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body ng-controller="displayController">
+<!-- 	<div id="veil" ng-show="isLoading"></div>
+    <div id="feedLoading" ng-show="isLoading">Loading...</div> -->
+	<h1>Hello</h1>
+	<hr>
+	<h1>Response</h1>
+	<p>{{googleAPI}}</p>
+	<hr>
+
+</body>
+</html>
+<script>
+    angular.module('myApp', ["ngResource"]) // ใส่ "ngResource" เพื่อจะทำ preview ==> loading https://fdietz.github.io/recipes-with-angular-js/common-user-interface-patterns/displaying-a-loading-spinner.html
+.controller('displayController', ['$scope','MyService', function($scope, MyService){
+      /*
+	 	{
+    "200": "Ok",
+    "201": "Created",
+    "202": "Accepted",
+    "404": "Not_Found",
+    "400": "Bad Request",
+    "403": "Forbidden",
+    "417": "Expectation Failed"
+} 
+	  */
+
+              $scope.getgoogleAPIData = function(){
+            	  MyService.googleAPI().then(function (response){
+            		  $scope.googleAPI = response.data;
+					  console.log('response : ',response.status)
+            		 
+                  }, function(error) {
+                    console.log(error)
+                  });
+              }
+              
+              
+              $scope.getgoogleAPIData();
+			 // $scope.getgoogleAPIDataStatus();
+
+      }])
+      
+ .factory('MyService', function($http) {
+		
+		var factory = {}; 
+
+		factory.googleAPI = function() {
+			return $http.get('https://script.google.com/macros/s/AKfycbzDwgi0TvnvzmyailYwHfsW58AjdxcMya8m1YPOomzEhg3cpNEgMsURv1aSfCyPboXL/exec');
+		}
+
+/* 		factory.test= function() {
+			$http.get('ใส่ url ที่ต้องการ');
+		}
+ */
+		return factory;
+	});
+</script>
